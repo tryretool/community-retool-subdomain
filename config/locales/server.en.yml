@@ -1,0 +1,7 @@
+en:
+  site_settings:
+    retool_subdomain_enabled: "Record each logged-in user's Retool org hostname from the shared `subdomain` cookie."
+    retool_subdomain_main_domain: "Main domain the cookie must belong to (hosts must end in .<this value>)."
+    retool_subdomain_user_field_id: "ID of the hidden, non-editable user field to store the value in. 0 stores nothing in Discourse and only sends the webhook."
+    retool_subdomain_webhook_url: "HTTPS URL that receives signed { username, subdomain } reports. Leave blank to disable reporting."
+    retool_subdomain_webhook_secret: "Shared secret used to sign webhook requests (HMAC-SHA256)."

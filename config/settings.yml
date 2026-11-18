@@ -1,0 +1,13 @@
+plugins:
+  retool_subdomain_enabled:
+    default: false
+  retool_subdomain_main_domain:
+    default: "retool.com"
+  retool_subdomain_user_field_id:
+    default: 0
+    min: 0
+  retool_subdomain_webhook_url:
+    default: ""
+  retool_subdomain_webhook_secret:
+    default: ""
+    secret: true
