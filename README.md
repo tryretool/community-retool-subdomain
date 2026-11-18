@@ -2,7 +2,7 @@
 
 Records which Retool Cloud org a logged-in forum user belongs to, so support can see it next to their threads.
 
-When someone who is logged in to Retool Cloud loads a forum page, the browser already sends Retool's `subdomain` cookie (it is scoped to `.retool.com`, and the forum is a subdomain of that). This plugin reads it on the server, validates it, and reports it to a Retool Workflow with a signed webhook. The Workflow writes it to a Retool DB table, which the Corral app reads. Nothing is stored in Discourse.
+When someone who is logged in to Retool Cloud loads a forum page, the browser already sends Retool's `subdomain` cookie (it is scoped to `.retool.com`, and the forum is a subdomain of that). This plugin reads it on the server, validates it, and reports it to a Retool Workflow with a signed webhook. The Workflow writes it to a Retool DB table, which the support team's tooling reads. Nothing is stored in Discourse.
 
 > **Status: untested inside Discourse.** The plugin was written against Discourse's plugin API from memory and has only been syntax-checked. Install it on a dev or staging forum first. Do not go straight to production.
 
@@ -11,7 +11,7 @@ When someone who is logged in to Retool Cloud loads a forum page, the browser al
 - Runs only for logged-in users, on full HTML page loads.
 - Does nothing when the cookie is missing, so logging out of Retool never erases a stored value.
 - Accepts only bare hostnames under `retool.com` (rejects `retool.com` itself, `login.retool.com`, ports, paths, other domains).
-- Sends one report per browser session in which it sees a valid hostname. The Retool DB table keeps one row per (username, org) with `last_seen_at`, so Corral shows the newest org and the history is kept.
+- Sends one report per browser session in which it sees a valid hostname. The Retool DB table keeps one row per (username, org) with `last_seen_at`, so the support tooling can show the newest org and the history is kept.
 - Never breaks a page: errors are caught and logged as `[community-retool-subdomain] capture failed`.
 
 **The value is a hint, not proof.** Any host under the same site (published apps included) can write that cookie, and users control their own browser. Don't use it for access or identity decisions.
@@ -73,8 +73,8 @@ Use a non-staff test account.
 2. Logged in as the test user, open the browser console on the forum and run:
    `document.cookie = "subdomain=test.retool.com; domain=.retool.com"`
    then reload the page.
-3. In the Retool Workflow's run history, confirm an accepted run. Confirm a row for the test user (username lowercased) in `forum_user_subdomains`, and that Corral shows `test.retool.com` on a thread by that user.
-4. Set the cookie to `other.retool.com` and reload. A second row should appear, and Corral should show the newest value (and the "multiple orgs" badge).
+3. In the Retool Workflow's run history, confirm an accepted run. Confirm a row for the test user (username lowercased) in the Workflow's table, and that the support tooling shows `test.retool.com` for that user.
+4. Set the cookie to `other.retool.com` and reload. A second row should appear, and the support tooling should show the newest value (and flag multiple orgs).
 5. Delete the cookie (or log out of the test session) and reload. No new report should arrive.
 6. Delete the test rows from the table afterwards.
 

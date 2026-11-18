@@ -24,8 +24,10 @@ module DiscourseRetoolSubdomain
       return if host.nil?
       return if session[DiscourseRetoolSubdomain::SESSION_KEY] == host
 
-      session[DiscourseRetoolSubdomain::SESSION_KEY] = host
+      # Mark the session only after recording succeeds, so a failed enqueue
+      # (e.g. a Redis outage) is retried on the next page load.
       record_retool_subdomain(current_user, host)
+      session[DiscourseRetoolSubdomain::SESSION_KEY] = host
     rescue => e
       Rails.logger.warn("[community-retool-subdomain] capture failed: #{e.class}: #{e.message}")
     end
